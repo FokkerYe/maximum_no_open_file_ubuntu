@@ -7,7 +7,7 @@
    nano ~/.bashrc
 2. Add the following line to set the maximum number of open file descriptors (ulimit -n) to 8192:
    ```bash
-   ulimit -n 8192
+   ulimit -n 65536
    ```
 3.Save the changes and exit the editor.
 
@@ -24,8 +24,8 @@ sudo nano /etc/security/limits.conf
 ```
 2.Add the following lines to set the maximum number of open file descriptors (nofile) to 8192 for all users:
 ```bash
-*    hard    nofile    8192
-*    soft    nofile    8192
+*    hard    nofile    65536
+*    soft    nofile    65536
 
 ```
 3. Save the changes and exit the editor.
@@ -40,6 +40,48 @@ sudo nano /etc/pam.d/common-session
 session    required   pam_limits.so
 
 ```
+
+```
+sudo nano /etc/sysctl.conf
+```
+
+### Add the following line:
+
+```
+fs.file-max = 65536
+```
+
+Apply the changes:
+
+```
+
+sudo sysctl -p
+```
+### tomcat limit service configuration
+```
+sudo nano /etc/systemd/system/tomcat.service
+```
+### Add the this file
+```
+[Service]
+Type=forking
+User=tomcat
+Group=tomcat
+LimitNOFILE=65536
+
+```
+### tomcat service restart command
+```
+sudo systemctl daemon-reload
+sudo systemctl restart tomcat
+```
+### checking the command open file limit tomcat
+```
+cat /proc/sys/fs/file-max
+
+cat/proc/$(pgrep -f tomcat)/limits | grep "Max open files"
+```
+### Verify the changes:
 6.Save the changes and exit the editor.
 ## Step 3: Apply Changes and Restart
 1.To apply the changes, reboot your system:
