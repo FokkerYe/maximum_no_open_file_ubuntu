@@ -26,6 +26,8 @@ sudo nano /etc/security/limits.conf
 ```bash
 *    hard    nofile    65536
 *    soft    nofile    65536
+root soft    nofile    65536
+root hard    nofile    65536
 
 ```
 3. Save the changes and exit the editor.
